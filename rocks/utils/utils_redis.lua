@@ -9,17 +9,24 @@ function utils.lookup(key)
 
     red:set_timeout(1000) -- 1 sec
 
-    local ok, err = red:connect("cached-media.lumate.org", 6379)
-    if not ok then
-        ngx.log(ngx.CRIT, err)
-        utils.log(ngx.time(), "Cached Media Connect Fail")
-        return nil, true
+    local ok, retries = nil, 0
+    while ((not ok) and retries < 3) do
+        retries = retries + 1
+        local ok, err = red:connect("cached-media.lumate.org", 6379)
+        if not ok then
+            ngx.log(ngx.CRIT, err)
+            utils.log(ngx.time(), "Cached Media Connect Fail")
+            break
+        end
     end
 
-    local res, err = red:get(key)
+    local multi, err = red:multi()
+    local ok, err = multi and red:get(key)
+    local ok, err = multi and ok and red:del(key)
+    local res, err = multi and ok red:exec()
     local ok, err = red:set_keepalive()
     local ok, err = red:close()
-    return res
+    return (type(res[1])=="string") and res[1]
 end
 
 function utils.log(key, field, incrby)
