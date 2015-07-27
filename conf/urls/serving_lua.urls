@@ -1,0 +1,5 @@
+        
+        location ~* /media/(?<impbidid>[\w\d]+)/? {
+            add_header Access-Control-Allow-Origin *;
+            content_by_lua_file rocks/serve/pull_media.lua;
+        }

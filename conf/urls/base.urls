@@ -1,0 +1,13 @@
+
+        location @fallback {
+            return 500 "error";
+        }
+        
+        location / {
+            return 400 "invalid url\n";
+        }
+        
+        location /health/ {
+            add_header Access-Control-Allow-Origin *;
+            return 200 "healthy\n";
+        }

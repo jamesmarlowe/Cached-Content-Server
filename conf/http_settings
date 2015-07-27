@@ -1,0 +1,31 @@
+
+    # logging
+    log_format spec_format '$time_iso8601 $request_uri $request_time $status $upstream_response_time';
+    access_log logs/access.log spec_format;
+
+    # settings
+    tcp_nodelay on;
+    merge_slashes off;
+    variables_hash_max_size 1024;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+
+    # time-outs
+    send_timeout 1s;
+    resolver_timeout 1s;
+    client_body_timeout 1s;
+    client_header_timeout 1s;
+
+    # lua import paths
+    lua_package_path "${prefix}rocks/serve/?.lua;${prefix}rocks/utils/?.lua;;";
+
+    # global namespace or blocking startup behaviour
+    init_by_lua '
+    ';
+
+    # how many requests to keep on one connection
+    keepalive_requests 1024;
+    # how long to allow each connection to stay idle
+    keepalive_timeout  1s;
+
+    resolver 8.8.8.8;

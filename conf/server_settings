@@ -1,0 +1,13 @@
+
+        # which port to use
+        listen 80;
+
+        # clear inbound and outbound useless headers
+        more_clear_headers 'Date';
+        more_clear_headers 'Server';
+        more_clear_headers 'Connection';
+        more_clear_input_headers 'Server';
+        more_clear_input_headers 'Connection';
+
+        # catch internal errors
+        error_page 500 501 502 503 504 @fallback;

@@ -1,0 +1,21 @@
+
+# match to cpu cores
+worker_processes  8;
+
+# where to log errors
+error_log logs/error.log notice;
+
+# maximum number of open files
+worker_rlimit_nofile 262144;
+
+events {
+
+    # polling method (epoll for Linux 2.6+)
+    use epoll;
+
+    # accept all connections at a time
+    multi_accept on;
+
+    # max simultaneous connections per worker
+    worker_connections 2048;
+}
